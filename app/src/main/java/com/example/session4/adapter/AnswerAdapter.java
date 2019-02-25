@@ -13,6 +13,8 @@ import com.example.session4.model.Item;
 import com.example.session4.ui.AnswerActivity;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -38,7 +40,21 @@ public class AnswerAdapter extends RecyclerView.Adapter<AnswerAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        holder.name.setText(items.get(position).getOwner().getDisplayName());
+        holder.is_accepted.setText(String.valueOf(items.get(position).getIs_accepted()));
+        holder.user_type.setText(items.get(position).getOwner().getUserType());
 
+        Picasso.get().load(items.get(position).getOwner().getProfileImage()).into(holder.imageView);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(holder.itemView.getContext(), AnswerActivity.class);
+                intent.putExtra("id", items.get(position).getAnswer_id());
+
+                holder.itemView.getContext().startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -46,10 +62,24 @@ public class AnswerAdapter extends RecyclerView.Adapter<AnswerAdapter.ViewHolder
         return items.size();
     }
 
+    // view holder
     class ViewHolder extends RecyclerView.ViewHolder{
+
+        @BindView(R.id.imageView)
+        ImageView imageView;
+
+        @BindView(R.id.name)
+        TextView name;
+
+        @BindView(R.id.user_type)
+        TextView user_type;
+
+        @BindView(R.id.is_accepted)
+        TextView is_accepted;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 }
